@@ -1,0 +1,20 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('MongoDB ulandi!'))
+  .catch(err => console.log('MongoDB xatosi:', err));
+
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/workers', require('./routes/workers'));
+app.use('/api/attendance', require('./routes/attendance'));
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server ${process.env.PORT} portda ishlamoqda`);
+});
