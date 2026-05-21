@@ -5,6 +5,7 @@ const Worker = require('../models/Worker');
 router.post('/login', async (req, res) => {
   try {
     const { phoneNumber } = req.body;
+     console.log("Kelgan raqam:", phoneNumber);
     const worker = await Worker.findOne({ phoneNumber });
     
     if (!worker) {
