@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Attendance = require('../models/Attendance');
 const auth = require('../middleware/auth');
 
-router.post('/checkin', auth, async (req, res) => {
+router.post('/check-in', auth, async (req, res) => {
   try {
     const attendance = new Attendance({
       worker: req.worker.id,
@@ -16,7 +16,7 @@ router.post('/checkin', auth, async (req, res) => {
   }
 });
 
-router.post('/checkout', auth, async (req, res) => {
+router.post('/check-out', auth, async (req, res) => {
   try {
     const attendance = await Attendance.findOne({
       worker: req.worker.id,
