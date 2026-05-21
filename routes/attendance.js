@@ -101,5 +101,5 @@ router.get('/report', auth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-});git add .
+});
 module.exports = router;
