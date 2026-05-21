@@ -54,4 +54,52 @@ router.post('/check-out', auth, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+router.get('/report', auth, async (req, res) => {
+  try {
+    const { workerId, startDate, endDate } = req.query;
+
+    const query = { worker: workerId || req.worker.id };
+
+    if (startDate || endDate) {
+      query.checkIn = {};
+      if (startDate) query.checkIn.$gte = new Date(startDate);
+      if (endDate) query.checkIn.$lte = new Date(endDate);
+    }
+
+    const records = await Attendance.find(query).sort({ checkIn: -1 });
+
+    // Frontend formatida qaytarish
+    const formatted = records.flatMap((r) => {
+      const result = [];
+      if (r.checkIn) {
+        result.push({
+          _id: r._id + "_in",
+          workerId: r.worker,
+          type: "check-in",
+          lat: r.location?.lat ?? 0,
+          lng: r.location?.lng ?? 0,
+          faceVerified: true,
+          timestamp: r.checkIn,
+        });
+      }
+      if (r.checkOut) {
+        result.push({
+          _id: r._id + "_out",
+          workerId: r.worker,
+          type: "check-out",
+          lat: r.location?.lat ?? 0,
+          lng: r.location?.lng ?? 0,
+          faceVerified: true,
+          timestamp: r.checkOut,
+        });
+      }
+      return result;
+    });
+
+    res.json(formatted);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});git add .
 module.exports = router;
